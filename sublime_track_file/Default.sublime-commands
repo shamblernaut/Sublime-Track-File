@@ -1,0 +1,10 @@
+[
+    {
+        "caption": "Track File: Start Tracking",
+        "command": "track_file"
+    },
+    {
+        "caption": "Track File: Stop Tracking",
+        "command": "stop_tracking_file"
+    }
+] 
