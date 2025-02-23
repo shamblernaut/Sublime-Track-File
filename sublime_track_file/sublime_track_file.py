@@ -25,10 +25,9 @@ class StartTrackingFileCommand(sublime_plugin.TextCommand):
     def run(self, edit, file_path):
         settings = sublime.load_settings('SublimeTrackFile.sublime-settings')
         watch_interval = settings.get('watch_interval', 1000)  # Default to 1 second
-        max_file_size = settings.get('max_file_size', 1048576)  # Default to 1MB
         
         self.view.settings().set('track_file_path', file_path)
-        self.view.run_command('watch_file', {'file_path': file_path, 'watch_interval': watch_interval, 'max_file_size': max_file_size})
+        self.view.run_command('watch_file', {'file_path': file_path, 'watch_interval': watch_interval})
 
 class StopTrackingFileCommand(sublime_plugin.TextCommand):
     def run(self, edit):
@@ -36,20 +35,19 @@ class StopTrackingFileCommand(sublime_plugin.TextCommand):
         self.view.settings().erase('track_file_path')
 
 class WatchFileCommand(sublime_plugin.TextCommand):
-    def run(self, edit, file_path=None, watch_interval=1000, max_file_size=1048576, stop=False):
+    def run(self, edit, file_path=None, watch_interval=1000, stop=False):
         if hasattr(self.view, 'file_watcher'):
             self.view.file_watcher.stop()
             
         if not stop and file_path:
-            self.view.file_watcher = FileWatcher(self.view, file_path, watch_interval, max_file_size)
+            self.view.file_watcher = FileWatcher(self.view, file_path, watch_interval)
             self.view.file_watcher.start()
 
 class FileWatcher:
-    def __init__(self, view, watch_file, watch_interval=1000, max_file_size=1048576):
+    def __init__(self, view, watch_file, watch_interval=1000):
         self.view = view
         self.watch_file = watch_file
         self.watch_interval = watch_interval
-        self.max_file_size = max_file_size
         self.is_watching = False
         self.last_modified = 0
         self.last_position = 0
@@ -66,18 +64,6 @@ class FileWatcher:
     def stop(self):
         self.is_watching = False
         
-    def truncate_file_if_needed(self):
-        """Keep only the last max_file_size bytes of the file"""
-        try:
-            with open(self.watch_file, 'r', newline='') as f:
-                content = f.read()
-            if len(content) > self.max_file_size:
-                with open(self.watch_file, 'w', newline='') as f:
-                    f.write(content[-self.max_file_size:])
-                self.last_position = self.max_file_size
-        except Exception as e:
-            print(f"Error truncating file: {e}")
-
     def normalize_line_endings(self, text):
         """Normalize line endings to match the view's line endings"""
         if not text:
@@ -100,10 +86,6 @@ class FileWatcher:
         try:
             current_mtime = Path(self.watch_file).stat().st_mtime
             current_size = Path(self.watch_file).stat().st_size
-            
-            # Check if file size exceeds limit
-            if current_size > self.max_file_size:
-                self.truncate_file_if_needed()
             
             if current_mtime > self.last_modified and current_size > self.last_position:
                 with open(self.watch_file, 'r', newline='') as f:

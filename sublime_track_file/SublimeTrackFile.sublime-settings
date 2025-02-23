@@ -2,10 +2,6 @@
     // The interval (in milliseconds) at which to check for file changes
     "watch_interval": 1000,
 
-    // Maximum file size in bytes (default: 1MB)
-    // When the file exceeds this size, it will be truncated to keep only the last max_file_size bytes
-    "max_file_size": 1048576,
-
     // Default file path to track (optional)
     // If set, this file will be pre-filled in the input panel when starting tracking
     "default_track_file": ""
