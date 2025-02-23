@@ -7,7 +7,6 @@ A Sublime Text plugin that allows you to track changes in a file and automatical
 - Track changes in any text file in real-time
 - Automatically insert new content at cursor position
 - Configurable watch interval
-- Automatic file size management to prevent memory issues
 - Proper handling of different line endings (Windows/Unix)
 - Customizable settings
 
@@ -28,10 +27,11 @@ Support for Package Control installation will be added in the future.
 ## Usage
 
 1. Open Sublime Text
-2. Press `Ctrl+Shift+T` (Windows/Linux) or use the command palette to select "Track File: Start Tracking"
-3. Enter the path to the file you want to track
-4. The plugin will start monitoring the file and insert any new content at your cursor position
-5. To stop tracking, use the command palette and select "Track File: Stop Tracking"
+2. Open a new file where you want the tracked content to appear
+3. Press `Ctrl+Shift+T` (Windows/Linux) or use the command palette to select "Track File: Start Tracking"
+4. Enter the path to the file you want to track
+5. Any new content added to the tracked file will appear at your cursor position
+6. To stop tracking, use the command palette and select "Track File: Stop Tracking"
 
 ## Settings
 
@@ -41,10 +41,6 @@ The plugin can be configured through the settings file. Create a file named `Sub
 {
     // The interval (in milliseconds) at which to check for file changes
     "watch_interval": 1000,
-
-    // Maximum file size in bytes (default: 1MB)
-    // When the file exceeds this size, it will be truncated
-    "max_file_size": 1048576,
 
     // Default file path to track (optional)
     // If set, this file will be pre-filled when starting tracking
